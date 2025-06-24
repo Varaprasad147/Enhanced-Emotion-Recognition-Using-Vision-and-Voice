@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Model files
+*.h5
+*.caffemodel
+*.prototxt
+
+# Audio files
+*.wav
+*.mp3
+
+# Logs
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Training data
+images/
+voice_data/
+temp_recording.wav
+voice_emotion_label_encoder.pkl
+voice_emotion_model.h5 
