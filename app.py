@@ -2,7 +2,6 @@ import streamlit as st
 import subprocess
 import os
 import sys
-import sounddevice as sd
 import soundfile as sf
 import numpy as np
 import librosa
@@ -20,6 +19,7 @@ import cv2
 from realtimedetection import FaceAnalyzer
 import threading
 import queue
+from st_audiorec import st_audiorec
 
 # Set page configuration
 st.set_page_config(
@@ -529,45 +529,27 @@ with col2:
         # Duration slider
         duration = st.slider("Recording Duration (seconds)", min_value=3, max_value=10, value=5)
         
-        if st.button("Record Voice", key="voice_btn"):
-            try:
-                # Record audio
-                audio_data, sample_rate = record_audio(duration=duration)
-                
-                # Save the recording temporarily
-                with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_file:
-                    sf.write(temp_file.name, audio_data, sample_rate)
-                    
-                    # Display audio player
-                    st.markdown('<h3 class="sub-header">Your Recording</h3>', unsafe_allow_html=True)
-                    st.audio(temp_file.name)
-                
-                # Extract features
+        st.markdown('<h3 class="sub-header">Record Your Voice</h3>', unsafe_allow_html=True)
+        audio_bytes = st_audiorec()
+        if audio_bytes is not None:
+            with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_file:
+                temp_file.write(audio_bytes)
+                temp_file.flush()
+                st.audio(temp_file.name)
+                # Load audio for feature extraction
+                audio_data, sample_rate = sf.read(temp_file.name)
                 st.markdown('<h3 class="sub-header">Analyzing Voice...</h3>', unsafe_allow_html=True)
                 features = extract_features(audio_data, sample_rate)
-                
-                # Predict emotion
                 emotion, confidence_scores = predict_emotion(features)
-                
-                # Display result
                 if emotion != "Model Not Trained" and emotion != "Error":
                     st.markdown('<h3 class="sub-header">Detection Result</h3>', unsafe_allow_html=True)
-                    
-                    # Display the detected emotion
                     st.markdown(f'<p class="success-text">Detected Emotion: {emotion}</p>', unsafe_allow_html=True)
-                    
-                    # Visualize confidence scores
                     if confidence_scores is not None:
                         st.markdown('<h4 class="sub-header">Confidence Scores</h4>', unsafe_allow_html=True)
                         emotions = ['Angry', 'Disgust', 'Fear', 'Happy', 'Neutral', 'Sad', 'Surprise']
                         fig = visualize_emotions(emotions, confidence_scores)
                         st.pyplot(fig)
-                
-                # Clean up temporary file
                 os.unlink(temp_file.name)
-                
-            except Exception as e:
-                st.markdown(f'<p class="error-text">Error during voice recording or processing: {str(e)}</p>', unsafe_allow_html=True)
 
 # Footer
 st.markdown('<div class="footer">Enhanced Emotion Recognition System | Powered by Deep Learning</div>', unsafe_allow_html=True)
