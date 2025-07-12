@@ -19,7 +19,7 @@ import cv2
 from realtimedetection import FaceAnalyzer
 import threading
 import queue
-from st_audiorec import st_audiorec
+# Remove the st_audiorec import and usage
 
 # Set page configuration
 st.set_page_config(
@@ -529,13 +529,14 @@ with col2:
         # Duration slider
         duration = st.slider("Recording Duration (seconds)", min_value=3, max_value=10, value=5)
         
-        st.markdown('<h3 class="sub-header">Record Your Voice</h3>', unsafe_allow_html=True)
-        audio_bytes = st_audiorec()
-        if audio_bytes is not None:
-                with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_file:
-                temp_file.write(audio_bytes)
+        st.markdown('<h3 class="sub-header">Upload Your Voice (.wav file)</h3>', unsafe_allow_html=True)
+        audio_file = st.file_uploader("Upload a .wav file for emotion recognition", type=["wav"])
+        if audio_file is not None:
+            # Save uploaded file to a temporary location
+            with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_file:
+                temp_file.write(audio_file.read())
                 temp_file.flush()
-                    st.audio(temp_file.name)
+                st.audio(temp_file.name)
                 # Load audio for feature extraction
                 audio_data, sample_rate = sf.read(temp_file.name)
                 st.markdown('<h3 class="sub-header">Analyzing Voice...</h3>', unsafe_allow_html=True)
@@ -549,7 +550,7 @@ with col2:
                         emotions = ['Angry', 'Disgust', 'Fear', 'Happy', 'Neutral', 'Sad', 'Surprise']
                         fig = visualize_emotions(emotions, confidence_scores)
                         st.pyplot(fig)
-                os.unlink(temp_file.name)
+            os.unlink(temp_file.name)
 
 # Footer
 st.markdown('<div class="footer">Enhanced Emotion Recognition System | Powered by Deep Learning</div>', unsafe_allow_html=True)
