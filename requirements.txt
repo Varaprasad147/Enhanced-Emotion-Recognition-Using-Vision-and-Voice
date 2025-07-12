@@ -11,7 +11,6 @@ tqdm
 opencv-contrib-python
 scikit-learn
 soundfile
-st-audiorec
 streamlit
 psutil
 matplotlib
