@@ -532,10 +532,10 @@ with col2:
         st.markdown('<h3 class="sub-header">Record Your Voice</h3>', unsafe_allow_html=True)
         audio_bytes = st_audiorec()
         if audio_bytes is not None:
-            with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_file:
+                with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_file:
                 temp_file.write(audio_bytes)
                 temp_file.flush()
-                st.audio(temp_file.name)
+                    st.audio(temp_file.name)
                 # Load audio for feature extraction
                 audio_data, sample_rate = sf.read(temp_file.name)
                 st.markdown('<h3 class="sub-header">Analyzing Voice...</h3>', unsafe_allow_html=True)
