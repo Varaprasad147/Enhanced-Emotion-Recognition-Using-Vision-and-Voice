@@ -5,7 +5,7 @@ import traceback
 import time
 import os
 import librosa
-import sounddevice as sd
+# import sounddevice as sd  # Removed for Streamlit Cloud compatibility
 import threading
 from scipy.io import wavfile
 import tensorflow as tf
@@ -211,10 +211,13 @@ class FaceAnalyzer:
         self.audio_data = []
         
         def record_audio():
-            with sd.InputStream(samplerate=self.sample_rate, channels=1) as stream:
-                while self.is_recording:
-                    audio_chunk, _ = stream.read(1024)
-                    self.audio_data.extend(audio_chunk.flatten())
+            # This function is no longer directly usable for audio recording in Streamlit Cloud
+            # as sounddevice is removed.
+            # For Streamlit Cloud, audio input would typically come from a Streamlit component
+            # or a pre-recorded audio file.
+            # For now, we'll just simulate recording or raise an error.
+            print("Voice recording is not available in this environment.")
+            self.is_recording = False # Ensure recording stops if not available
         
         self.recording_thread = threading.Thread(target=record_audio)
         self.recording_thread.start()
